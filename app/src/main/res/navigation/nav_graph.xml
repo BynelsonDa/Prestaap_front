@@ -24,6 +24,41 @@
     </fragment>
 
     <fragment
+        android:id="@+id/nuevoClienteFragment"
+        android:name="com.example.prestaap.ui.NuevoClienteFragment"
+        android:label="Nuevo Cliente"
+        tools:layout="@layout/fragment_nuevo_cliente" />
+
+    <action
+        android:id="@+id/action_global_nuevoClienteFragment"
+        app:destination="@id/nuevoClienteFragment"
+        app:launchSingleTop="true" />
+
+    <action
+        android:id="@+id/action_global_seleccionarClienteFragment"
+        app:destination="@id/seleccionarClienteFragment"
+        app:launchSingleTop="true" />
+
+    <fragment
+        android:id="@+id/seleccionarClienteFragment"
+        android:name="com.example.prestaap.ui.SeleccionarClienteFragment"
+        android:label="Seleccionar Cliente"
+        tools:layout="@layout/fragment_seleccionar_cliente">
+        <action
+            android:id="@+id/action_seleccionarClienteFragment_to_crearCreditoFragment"
+            app:destination="@id/crearCreditoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/crearCreditoFragment"
+        android:name="com.example.prestaap.ui.CrearCreditoFragment"
+        android:label="Crear Crédito"
+        tools:layout="@layout/fragment_crear_credito">
+        <argument android:name="clienteCedula" app:argType="long" />
+        <argument android:name="clienteNombre" app:argType="string" />
+    </fragment>
+
+    <fragment
         android:id="@+id/clienteCreditosFragment"
         android:name="com.example.prestaap.ui.ClienteCreditosFragment"
         android:label="Créditos"

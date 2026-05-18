@@ -88,16 +88,31 @@
             </FrameLayout>
 
             <!-- Info rows -->
-            <include layout="@layout/item_info_row"
-                android:id="@+id/rowCedula" />
-            <include layout="@layout/item_info_row"
-                android:id="@+id/rowTelefono" />
-            <include layout="@layout/item_info_row"
-                android:id="@+id/rowDireccion" />
-            <include layout="@layout/item_info_row"
-                android:id="@+id/rowMonto" />
-            <include layout="@layout/item_info_row"
-                android:id="@+id/rowCreditos" />
+            <include
+                android:id="@+id/rowCedula"
+                layout="@layout/item_info_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <include
+                android:id="@+id/rowTelefono"
+                layout="@layout/item_info_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <include
+                android:id="@+id/rowDireccion"
+                layout="@layout/item_info_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <include
+                android:id="@+id/rowMonto"
+                layout="@layout/item_info_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <include
+                android:id="@+id/rowCreditos"
+                layout="@layout/item_info_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
     </ScrollView>
