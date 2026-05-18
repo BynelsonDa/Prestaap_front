@@ -2,11 +2,20 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/clientesFragment">
+    app:startDestination="@id/zonasFragment">
+
+    <fragment
+        android:id="@+id/zonasFragment"
+        android:name="com.example.prestaap.ui.ZonasFragment"
+        android:label="Tus Zonas">
+        <action
+            android:id="@+id/action_zonas_to_clientes"
+            app:destination="@id/clientesFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/clientesFragment"
         android:name="com.example.prestaap.ui.ClientesFragment"
-        android:label="Tus Zonas" />
+        android:label="Clientes" />
 
 </navigation>
