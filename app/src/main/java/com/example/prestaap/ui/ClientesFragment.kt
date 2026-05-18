@@ -94,7 +94,7 @@ class ClientesFragment : Fragment() {
             // TODO: show Crear Crédito / Crear Cliente options
         }
         binding.btnBack.setOnClickListener {
-            parentFragmentManager.popBackStack()
+            findNavController().navigateUp()
         }
     }
 
