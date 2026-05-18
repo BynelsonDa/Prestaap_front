@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Prestaap</string>
+    <string name="app_tagline">Gestión de créditos sin complicaciones</string>
+
+    <!-- Startup Screen -->
+    <string name="feature_clients_title">Gestiona tus clientes</string>
+    <string name="feature_clients_desc">Registra y consulta toda la información de tus clientes en un solo lugar.</string>
+    <string name="feature_credits_title">Crea y controla créditos</string>
+    <string name="feature_credits_desc">Define montos, intereses y cuotas. Lleva el control de cada préstamo.</string>
+    <string name="feature_payments_title">Gestiona tus pagos</string>
+    <string name="feature_payments_desc">Registra los pagos de tus clientes y mantén al día tus cuentas.</string>
+    <string name="btn_continue">Continue</string>
+
+    <!-- Login Screen -->
+    <string name="login_welcome">Bienvenido</string>
+    <string name="login_subtitle">Ingresa tus credenciales para continuar</string>
+    <string name="label_username">Usuario</string>
+    <string name="hint_username">Ingresa tu usuario</string>
+    <string name="label_password">Contraseña</string>
+    <string name="hint_password">••••••••••••••</string>
+    <string name="forgot_password">¿Olvidaste tu contraseña?</string>
+    <string name="btn_login">Ingresar</string>
+</resources>
