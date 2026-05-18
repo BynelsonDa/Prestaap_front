@@ -39,7 +39,7 @@
             android:name=".MainActivity"
             android:exported="false"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Prestaap" />
+            android:theme="@style/Theme.FastCredit" />
 
     </application>
 

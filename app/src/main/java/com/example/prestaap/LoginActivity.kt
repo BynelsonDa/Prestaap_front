@@ -1,9 +1,9 @@
 package com.example.prestaap
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.prestaap.databinding.ActivityLoginBinding
 
@@ -27,22 +27,11 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnLogin.setOnClickListener {
-            val username = binding.etUsername.text?.toString()?.trim() ?: ""
-            val password = binding.etPassword.text?.toString() ?: ""
-
-            if (username.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Por favor ingresa usuario y contraseña", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            // TODO: Replace with real authentication logic
-            Toast.makeText(this, "Iniciando sesión…", Toast.LENGTH_SHORT).show()
-            // startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
 
-        binding.tvForgotPassword.setOnClickListener {
-            Toast.makeText(this, "Recuperación de contraseña próximamente", Toast.LENGTH_SHORT).show()
-        }
+        binding.tvForgotPassword.setOnClickListener { }
 
         binding.btnLoginNext.setOnClickListener {
             binding.btnLogin.performClick()

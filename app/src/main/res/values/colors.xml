@@ -46,4 +46,11 @@
 
     <!-- Transparent -->
     <color name="transparent">#00000000</color>
+
+    <!-- Clientes screen -->
+    <color name="k_primary">#2563EB</color>
+    <color name="k_background">#F5F7FA</color>
+    <color name="search_bg">#F1F5F9</color>
+    <color name="nav_inactive">#9CA3AF</color>
+    <color name="zona_card_pattern">#3B82F6</color>
 </resources>
