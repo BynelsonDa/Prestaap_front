@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/zonasFragment">
 
@@ -16,6 +17,52 @@
     <fragment
         android:id="@+id/clientesFragment"
         android:name="com.example.prestaap.ui.ClientesFragment"
-        android:label="Clientes" />
+        android:label="Clientes">
+        <action
+            android:id="@+id/action_clientesFragment_to_clienteCreditosFragment"
+            app:destination="@id/clienteCreditosFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/clienteCreditosFragment"
+        android:name="com.example.prestaap.ui.ClienteCreditosFragment"
+        android:label="Créditos"
+        tools:layout="@layout/fragment_cliente_creditos">
+        <argument android:name="nombreCliente" app:argType="string" />
+        <argument android:name="clienteId"     app:argType="integer" />
+        <action
+            android:id="@+id/action_clienteCreditosFragment_to_clienteDetalleFragment"
+            app:destination="@id/clienteDetalleFragment" />
+        <action
+            android:id="@+id/action_clienteCreditosFragment_to_creditoDetalleFragment"
+            app:destination="@id/creditoDetalleFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/clienteDetalleFragment"
+        android:name="com.example.prestaap.ui.ClienteDetalleFragment"
+        android:label="Cliente"
+        tools:layout="@layout/fragment_cliente_detalle">
+        <argument android:name="nombre"           app:argType="string" />
+        <argument android:name="cedula"            app:argType="string" />
+        <argument android:name="telefono"          app:argType="string" />
+        <argument android:name="direccion"         app:argType="string" />
+        <argument android:name="montoTotal"        app:argType="long"    />
+        <argument android:name="creditosPrestados" app:argType="integer" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/creditoDetalleFragment"
+        android:name="com.example.prestaap.ui.CreditoDetalleFragment"
+        android:label="Detalle Crédito"
+        tools:layout="@layout/fragment_credito_detalle">
+        <argument android:name="creditoId"     app:argType="integer" />
+        <argument android:name="nombre"        app:argType="string" />
+        <argument android:name="estado"        app:argType="string" />
+        <argument android:name="prestado"      app:argType="long" />
+        <argument android:name="restante"      app:argType="long" />
+        <argument android:name="cuotasPagadas" app:argType="integer" />
+        <argument android:name="totalCuotas"   app:argType="integer" />
+    </fragment>
 
 </navigation>

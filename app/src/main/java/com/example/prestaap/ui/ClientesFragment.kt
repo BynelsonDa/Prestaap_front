@@ -50,7 +50,16 @@ class ClientesFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = ClientesAdapter { cliente ->
-            // TODO: navigate to DetalleClienteFragment with cliente.id
+            val bundle = android.os.Bundle().apply {
+                putString("nombreCliente", cliente.nombre)
+                putInt("clienteId",        cliente.id)
+                putString("cedula",        cliente.cedula)
+                putString("telefono",      cliente.telefono)
+                putString("direccion",     cliente.direccion)
+                putLong("montoTotal",      cliente.montoTotal)
+                putInt("creditosPrestados", cliente.creditosPrestados)
+            }
+            findNavController().navigate(R.id.action_clientesFragment_to_clienteCreditosFragment, bundle)
         }
         binding.rvClientes.layoutManager = LinearLayoutManager(requireContext())
         binding.rvClientes.adapter = adapter

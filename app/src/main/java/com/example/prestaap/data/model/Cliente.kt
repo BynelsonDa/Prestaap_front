@@ -7,5 +7,10 @@ data class Cliente(
     val estado: String,
     val creditos: Int,
     val saldoPrestado: Long,
-    val saldoPendiente: Long
+    val saldoPendiente: Long,
+    val cedula: String = "",
+    val telefono: String = "",
+    val direccion: String = "",
+    val montoTotal: Long = 0L,
+    val creditosPrestados: Int = 0
 )
