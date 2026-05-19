@@ -6,17 +6,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.prestaap.data.model.Credito
+import com.example.prestaap.data.model.CreditoResumen
 import com.example.prestaap.databinding.ItemCreditoBinding
 
 class CreditosAdapter(
-    private val onAbonarClick: (Credito) -> Unit,
-    private val onCreditoClick: (Credito) -> Unit
+    private val onAbonarClick: (CreditoResumen, Int) -> Unit,
+    private val onCreditoClick: (CreditoResumen, Int) -> Unit
 ) : RecyclerView.Adapter<CreditosAdapter.CreditoViewHolder>() {
 
-    private var creditos: List<Credito> = emptyList()
+    private var creditos: List<CreditoResumen> = emptyList()
 
-    fun submitList(nuevaLista: List<Credito>) {
+    fun submitList(nuevaLista: List<CreditoResumen>) {
         val diff = DiffUtil.calculateDiff(CreditoDiff(creditos, nuevaLista))
         creditos = nuevaLista
         diff.dispatchUpdatesTo(this)
@@ -26,21 +26,21 @@ class CreditosAdapter(
         CreditoViewHolder(ItemCreditoBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun onBindViewHolder(holder: CreditoViewHolder, position: Int) =
-        holder.bind(creditos[position])
+        holder.bind(creditos[position], position)
 
     override fun getItemCount() = creditos.size
 
     inner class CreditoViewHolder(private val binding: ItemCreditoBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(credito: Credito) {
-            binding.tvNombreCredito.text = credito.nombre
-            binding.tvPrestado.text = formatPeso(credito.prestado)
-            binding.tvRestante.text = formatPeso(credito.restante)
+        fun bind(credito: CreditoResumen, position: Int) {
+            binding.tvNombreCredito.text = credito.label
+            binding.tvPrestado.text = formatPeso(credito.montoPrestamo.toLong())
+            binding.tvRestante.text = formatPeso(credito.montoRestante.toLong())
             binding.tvCuotas.text = "${credito.cuotasPagadas}/${credito.totalCuotas}"
             applyBadge(credito.estado)
-            binding.btnAbonar.setOnClickListener { onAbonarClick(credito) }
-            binding.root.setOnClickListener { onCreditoClick(credito) }
+            binding.btnAbonar.setOnClickListener { onAbonarClick(credito, position) }
+            binding.root.setOnClickListener { onCreditoClick(credito, position) }
         }
 
         private fun applyBadge(estado: String) {
@@ -63,12 +63,12 @@ class CreditosAdapter(
     }
 
     private class CreditoDiff(
-        private val old: List<Credito>,
-        private val new: List<Credito>
+        private val old: List<CreditoResumen>,
+        private val new: List<CreditoResumen>
     ) : DiffUtil.Callback() {
         override fun getOldListSize() = old.size
         override fun getNewListSize() = new.size
-        override fun areItemsTheSame(o: Int, n: Int) = old[o].id == new[n].id
+        override fun areItemsTheSame(o: Int, n: Int) = old[o].label == new[n].label
         override fun areContentsTheSame(o: Int, n: Int) = old[o] == new[n]
     }
 }

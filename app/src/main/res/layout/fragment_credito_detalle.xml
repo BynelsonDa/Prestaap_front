@@ -44,6 +44,14 @@
 
     </LinearLayout>
 
+    <!-- Loading indicator -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
+
     <!-- Estado badge -->
     <TextView
         android:id="@+id/tvEstado"
@@ -58,6 +66,7 @@
 
     <!-- Info grid -->
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -245,10 +254,11 @@
 
             </TableRow>
 
-            <!-- Row 4: Cuotas pagadas | Valor por cuota capital -->
+            <!-- Row 4: Cuotas pagadas (ancho completo) -->
             <TableRow>
 
                 <androidx.cardview.widget.CardView
+                    android:layout_span="2"
                     android:layout_margin="6dp"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="1dp"
@@ -266,33 +276,6 @@
                             android:textSize="12sp" />
                         <TextView
                             android:id="@+id/tvCuotasPagadas"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:textSize="15sp"
-                            android:textColor="#1A1A1A"
-                            android:layout_marginTop="4dp" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_margin="6dp"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="1dp"
-                    app:cardBackgroundColor="#FFFFFF">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="14dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Valor por cuota capital"
-                            android:textColor="#888888"
-                            android:textSize="12sp" />
-                        <TextView
-                            android:id="@+id/tvValorCuotaCapital"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textStyle="bold"

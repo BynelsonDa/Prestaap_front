@@ -8,13 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prestaap.R
-import com.example.prestaap.data.model.Credito
+import com.example.prestaap.UiState
 import com.example.prestaap.databinding.FragmentClienteCreditosBinding
+import com.example.prestaap.viewmodel.ClienteCreditosViewModel
 import com.google.android.material.button.MaterialButton
 
 class ClienteCreditosFragment : Fragment() {
@@ -22,20 +25,8 @@ class ClienteCreditosFragment : Fragment() {
     private var _binding: FragmentClienteCreditosBinding? = null
     private val binding get() = _binding!!
 
+    private val viewModel: ClienteCreditosViewModel by viewModels()
     private lateinit var adapter: CreditosAdapter
-    private var showingAll = true
-    private var currentEstado = "Todos"
-
-    private val mockCreditos = listOf(
-        Credito(1, "Crédito 1", "Pendiente", 80000,  48000,  2, 4,
-                "01/10/2025", "Semanal", 20.0, 4000L,  20000L, 1, 48000L,  48000L, "29/10/2025"),
-        Credito(2, "Crédito 2", "Atrasado",  120000, 96000,  2, 5,
-                "11/12/2025", "Semanal", 20.0, 24000L, 24000L, 2, 48000L,  96000L, "15/01/2026"),
-        Credito(3, "Crédito 3", "Pagado",    80000,  0,      4, 4,
-                "01/06/2025", "Mensual", 20.0, 4000L,  20000L, 0, 96000L,  0L,     "01/10/2025"),
-        Credito(4, "Crédito 4", "Pagado",    80000,  0,      4, 4,
-                "15/07/2025", "Mensual", 20.0, 4000L,  20000L, 0, 96000L,  0L,     "15/11/2025")
-    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -56,32 +47,27 @@ class ClienteCreditosFragment : Fragment() {
         setupSpinner()
         setupInfoPersonalButton(args)
         setupBottomButtons()
+        observeViewModel()
+
+        val cedula = args.getLong("cedula", 0L)
+        viewModel.fetchCreditos(cedula)
     }
 
     private fun setupRecyclerView() {
         adapter = CreditosAdapter(
-            onAbonarClick = { credito ->
-                AbonarBottomSheet.newInstance(credito.id)
+            onAbonarClick = { _, position ->
+                AbonarBottomSheet.newInstance(position)
                     .show(parentFragmentManager, "abonar")
             },
-            onCreditoClick = { credito ->
+            onCreditoClick = { credito, position ->
                 val bundle = Bundle().apply {
-                    putInt("creditoId",           credito.id)
-                    putString("nombre",           credito.nombre)
-                    putString("estado",           credito.estado)
-                    putLong("prestado",           credito.prestado)
-                    putLong("restante",           credito.restante)
-                    putInt("cuotasPagadas",       credito.cuotasPagadas)
-                    putInt("totalCuotas",         credito.totalCuotas)
-                    putString("fechaCredito",     credito.fechaCredito)
-                    putString("frecuenciaPago",   credito.frecuenciaPago)
-                    putFloat("porcentajeInteres", credito.porcentajeInteres.toFloat())
-                    putLong("interesesPorCuota",  credito.interesesPorCuota)
-                    putLong("valorCuotaCapital",  credito.valorCuotaCapital)
-                    putInt("cuotasVencidas",      credito.cuotasVencidas)
-                    putLong("totalAbonado",       credito.totalAbonado)
-                    putLong("deudaTotal",         credito.deudaTotal)
-                    putString("fechaVencimiento", credito.fechaVencimiento)
+                    putInt("creditoId",     position + 1)
+                    putString("nombre",     credito.label)
+                    putString("estado",     credito.estado)
+                    putLong("prestado",     credito.montoPrestamo.toLong())
+                    putLong("restante",     credito.montoRestante.toLong())
+                    putInt("cuotasPagadas", credito.cuotasPagadas)
+                    putInt("totalCuotas",   credito.totalCuotas)
                 }
                 findNavController().navigate(
                     R.id.action_clienteCreditosFragment_to_creditoDetalleFragment,
@@ -91,21 +77,18 @@ class ClienteCreditosFragment : Fragment() {
         )
         binding.rvCreditos.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCreditos.adapter = adapter
-        applyFilter()
     }
 
     private fun setupTabs() {
         setTabActive(binding.btnTodosLosCreditos, binding.btnACobrarHoy)
 
         binding.btnTodosLosCreditos.setOnClickListener {
-            showingAll = true
             setTabActive(binding.btnTodosLosCreditos, binding.btnACobrarHoy)
-            applyFilter()
+            viewModel.mostrarTodos()
         }
         binding.btnACobrarHoy.setOnClickListener {
-            showingAll = false
             setTabActive(binding.btnACobrarHoy, binding.btnTodosLosCreditos)
-            applyFilter()
+            viewModel.mostrarACobrar()
         }
     }
 
@@ -120,32 +103,40 @@ class ClienteCreditosFragment : Fragment() {
     }
 
     private fun setupSpinner() {
-        val estados = listOf("Todos", "Pendiente", "Atrasado", "Pagado")
+        val estados = listOf("Todos", "Pendiente", "Pagado")
         val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, estados)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerEstado.adapter = spinnerAdapter
 
         binding.spinnerEstado.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, v: View?, position: Int, id: Long) {
-                currentEstado = estados[position]
-                applyFilter()
+                viewModel.filtrarPorEstado(estados[position])
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
     }
 
-    private fun applyFilter() {
-        var list = if (showingAll) mockCreditos
-                   else mockCreditos.filter { it.estado == "Pendiente" || it.estado == "Atrasado" }
-        if (currentEstado != "Todos") list = list.filter { it.estado == currentEstado }
-        adapter.submitList(list)
+    private fun observeViewModel() {
+        viewModel.creditos.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> binding.progressBar.visibility = View.VISIBLE
+                is UiState.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    adapter.submitList(state.data)
+                }
+                is UiState.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 
     private fun setupInfoPersonalButton(args: Bundle) {
         binding.btnInfoPersonal.setOnClickListener {
             val bundle = Bundle().apply {
                 putString("nombre",    args.getString("nombreCliente", ""))
-                putString("cedula",    args.getString("cedula", ""))
+                putString("cedula",    args.getLong("cedula", 0L).toString())
                 putString("telefono",  args.getString("telefono", ""))
                 putString("direccion", args.getString("direccion", ""))
                 putLong("montoTotal",  args.getLong("montoTotal", 0L))
@@ -163,13 +154,16 @@ class ClienteCreditosFragment : Fragment() {
             AbonarBottomSheet.newInstance(null).show(parentFragmentManager, "abonar_todo")
         }
         binding.btnEliminar.setOnClickListener {
-            val dialog = AlertDialog.Builder(requireContext())
+            AlertDialog.Builder(requireContext())
                 .setTitle("¿Eliminar crédito?")
                 .setMessage("Esta acción no se puede deshacer")
                 .setPositiveButton("Eliminar") { _, _ -> }
                 .setNegativeButton("Cancelar", null)
                 .show()
-            dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.parseColor("#E53935"))
+                .also { dialog ->
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                        ?.setTextColor(Color.parseColor("#E53935"))
+                }
         }
     }
 

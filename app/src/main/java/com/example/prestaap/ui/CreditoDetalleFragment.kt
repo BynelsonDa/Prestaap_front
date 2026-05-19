@@ -6,14 +6,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.prestaap.UiState
+import com.example.prestaap.data.model.CreditoDetalle
 import com.example.prestaap.databinding.FragmentCreditoDetalleBinding
+import com.example.prestaap.viewmodel.CreditoDetalleViewModel
 
 class CreditoDetalleFragment : Fragment() {
 
     private var _binding: FragmentCreditoDetalleBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: CreditoDetalleViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -26,42 +33,53 @@ class CreditoDetalleFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val args = requireArguments()
-        val creditoId         = args.getInt("creditoId", 0)
-        val nombre            = args.getString("nombre", "Crédito")
-        val estado            = args.getString("estado", "")
-        val prestado          = args.getLong("prestado", 0L)
-        val cuotasPagadas     = args.getInt("cuotasPagadas", 0)
-        val totalCuotas       = args.getInt("totalCuotas", 0)
-        val fechaCredito      = args.getString("fechaCredito", "")
-        val frecuenciaPago    = args.getString("frecuenciaPago", "")
-        val porcentajeInteres = args.getFloat("porcentajeInteres", 0f)
-        val interesesPorCuota = args.getLong("interesesPorCuota", 0L)
-        val valorCuotaCapital = args.getLong("valorCuotaCapital", 0L)
-        val cuotasVencidas    = args.getInt("cuotasVencidas", 0)
-        val totalAbonado      = args.getLong("totalAbonado", 0L)
-        val deudaTotal        = args.getLong("deudaTotal", 0L)
-        val fechaVencimiento  = args.getString("fechaVencimiento", "")
+        val creditoId = args.getInt("creditoId", 0)
+        val nombre    = args.getString("nombre", "Crédito")
 
-        binding.tvCreditoNombre.text     = nombre
-        binding.tvTotalPrestado.text     = formatPeso(prestado)
-        binding.tvFechaCredito.text      = fechaCredito
-        binding.tvFrecuenciaPago.text    = frecuenciaPago
-        binding.tvTotalCuotas.text       = totalCuotas.toString()
-        binding.tvPorcentajeInteres.text = "${porcentajeInteres.toInt()}%"
-        binding.tvInteresesPorCuota.text = formatPeso(interesesPorCuota)
-        binding.tvCuotasPagadas.text     = "$cuotasPagadas/$totalCuotas"
-        binding.tvValorCuotaCapital.text = formatPeso(valorCuotaCapital)
-        binding.tvCuotasVencidas.text    = cuotasVencidas.toString()
-        binding.tvTotalAbonado.text      = formatPeso(totalAbonado)
-        binding.tvDeudaTotal.text        = formatPeso(deudaTotal)
-        binding.tvFechaVencimiento.text  = fechaVencimiento
-
-        applyBadge(estado)
-
+        binding.tvCreditoNombre.text = nombre
         binding.btnBack.setOnClickListener { findNavController().navigateUp() }
         binding.btnAbonar.setOnClickListener {
             AbonarBottomSheet.newInstance(creditoId).show(parentFragmentManager, "abonar_detalle")
         }
+
+        observeViewModel()
+        viewModel.fetchDetalle(creditoId)
+    }
+
+    private fun observeViewModel() {
+        viewModel.detalle.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.scrollView.visibility  = View.GONE
+                }
+                is UiState.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.scrollView.visibility  = View.VISIBLE
+                    bindDetalle(state.data)
+                }
+                is UiState.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.scrollView.visibility  = View.VISIBLE
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun bindDetalle(d: CreditoDetalle) {
+        binding.tvTotalPrestado.text     = formatPeso(d.totalPrestado.toLong())
+        binding.tvFechaCredito.text      = d.fechaPrestamo
+        binding.tvFrecuenciaPago.text    = d.frecuenciaPago
+        binding.tvTotalCuotas.text       = d.numeroDeCuotas.toString()
+        binding.tvPorcentajeInteres.text = "${d.interes}%"
+        binding.tvInteresesPorCuota.text = formatPeso(d.valorInteresPorCuota.toLong())
+        binding.tvCuotasPagadas.text     = "${d.cuotasPagadas}/${d.numeroDeCuotas}"
+        binding.tvCuotasVencidas.text    = d.cuotasVencidas.toString()
+        binding.tvTotalAbonado.text      = formatPeso(d.totalAbonado.toLong())
+        binding.tvDeudaTotal.text        = formatPeso(d.deudaTotal.toLong())
+        binding.tvFechaVencimiento.text  = d.fechaLimite
+        applyBadge(d.estado)
     }
 
     private fun applyBadge(estado: String) {
