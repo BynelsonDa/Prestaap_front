@@ -3,6 +3,7 @@ package com.example.prestaap.ui
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,8 +50,10 @@ class ZonasFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = ZonasAdapter(
             zonas = emptyList(),
-            onZonaClick = {
-                findNavController().navigate(R.id.action_zonas_to_clientes)
+            onZonaClick = { zona ->
+                Log.d("ZonasFrag", "zona clickeada → id=${zona.id}  nombre=${zona.nombre}  objeto=$zona")
+                val bundle = android.os.Bundle().apply { putInt("zonaId", zona.id) }
+                findNavController().navigate(R.id.action_zonas_to_clientes, bundle)
             },
             onAddClick = {
                 // TODO: navigate to CreateZonaFragment

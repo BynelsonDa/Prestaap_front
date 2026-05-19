@@ -6,16 +6,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.prestaap.R
-import com.example.prestaap.data.model.Cliente
+import com.example.prestaap.data.model.ClienteZona
 import com.example.prestaap.databinding.ItemClienteBinding
 
 class ClientesAdapter(
-    private val onClienteClick: (Cliente) -> Unit
+    private val onClienteClick: (ClienteZona) -> Unit
 ) : RecyclerView.Adapter<ClientesAdapter.ClienteViewHolder>() {
 
-    private var clientes: List<Cliente> = emptyList()
+    private var clientes: List<ClienteZona> = emptyList()
 
-    fun submitList(nuevaLista: List<Cliente>) {
+    fun submitList(nuevaLista: List<ClienteZona>) {
         val diff = DiffUtil.calculateDiff(ClienteDiff(clientes, nuevaLista))
         clientes = nuevaLista
         diff.dispatchUpdatesTo(this)
@@ -32,12 +32,12 @@ class ClientesAdapter(
     inner class ClienteViewHolder(private val binding: ItemClienteBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(cliente: Cliente) {
+        fun bind(cliente: ClienteZona) {
             binding.tvNombre.text = cliente.nombre
-            binding.tvZona.text = cliente.zona
-            binding.tvCreditos.text = cliente.creditos.toString()
-            binding.tvSaldoPrestado.text = formatPeso(cliente.saldoPrestado)
-            binding.tvSaldoPendiente.text = formatPeso(cliente.saldoPendiente)
+            binding.tvZona.text = cliente.direccion
+            binding.tvCreditos.text = cliente.cantidadCreditos.toString()
+            binding.tvSaldoPrestado.text = formatPeso(cliente.montoTotalPrestamo.toLong())
+            binding.tvSaldoPendiente.text = formatPeso(cliente.saldoPendiente.toLong())
             applyBadge(cliente.estado)
             binding.root.setOnClickListener { onClienteClick(cliente) }
             binding.ivDetalle.setOnClickListener { onClienteClick(cliente) }
@@ -57,12 +57,12 @@ class ClientesAdapter(
     }
 
     private class ClienteDiff(
-        private val old: List<Cliente>,
-        private val new: List<Cliente>
+        private val old: List<ClienteZona>,
+        private val new: List<ClienteZona>
     ) : DiffUtil.Callback() {
         override fun getOldListSize() = old.size
         override fun getNewListSize() = new.size
-        override fun areItemsTheSame(o: Int, n: Int) = old[o].id == new[n].id
+        override fun areItemsTheSame(o: Int, n: Int) = old[o].cedula == new[n].cedula
         override fun areContentsTheSame(o: Int, n: Int) = old[o] == new[n]
     }
 }

@@ -18,6 +18,7 @@
         android:id="@+id/clientesFragment"
         android:name="com.example.prestaap.ui.ClientesFragment"
         android:label="Clientes">
+        <argument android:name="zonaId" app:argType="integer" android:defaultValue="0" />
         <action
             android:id="@+id/action_clientesFragment_to_clienteCreditosFragment"
             app:destination="@id/clienteCreditosFragment" />

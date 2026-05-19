@@ -3,11 +3,13 @@ package com.example.prestaap.ui
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -46,18 +48,21 @@ class ClientesFragment : Fragment() {
                 else -> true
             }
         }
+
+        val zonaId = arguments?.getInt("zonaId") ?: 0
+        Log.d("ClientesFrag", "arguments=$arguments  zonaId=$zonaId")
+        viewModel.fetchClientes(zonaId)
     }
 
     private fun setupRecyclerView() {
         adapter = ClientesAdapter { cliente ->
-            val bundle = android.os.Bundle().apply {
+            val bundle = Bundle().apply {
                 putString("nombreCliente", cliente.nombre)
-                putInt("clienteId",        cliente.id)
-                putString("cedula",        cliente.cedula)
-                putString("telefono",      cliente.telefono)
-                putString("direccion",     cliente.direccion)
-                putLong("montoTotal",      cliente.montoTotal)
-                putInt("creditosPrestados", cliente.creditosPrestados)
+                putInt("clienteId", cliente.cedula.toInt())
+                putLong("cedula", cliente.cedula)
+                putString("direccion", cliente.direccion)
+                putLong("montoTotal", cliente.montoTotalPrestamo.toLong())
+                putInt("creditosPrestados", cliente.cantidadCreditos)
             }
             findNavController().navigate(R.id.action_clientesFragment_to_clienteCreditosFragment, bundle)
         }
@@ -76,7 +81,7 @@ class ClientesFragment : Fragment() {
     }
 
     private fun setupSpinner() {
-        val estados = listOf("Todos", "Pendiente", "Pagado", "Atrasado")
+        val estados = listOf("Todos", "Pendiente", "Pagado")
         val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, estados)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.spinnerEstado.adapter = spinnerAdapter
@@ -101,9 +106,15 @@ class ClientesFragment : Fragment() {
     private fun observeViewModel() {
         viewModel.clientes.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is UiState.Loading -> { /* TODO: shimmer */ }
-                is UiState.Success -> adapter.submitList(state.data)
-                is UiState.Error   -> { /* TODO: snackbar */ }
+                is UiState.Loading -> binding.progressBar.visibility = View.VISIBLE
+                is UiState.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    adapter.submitList(state.data)
+                }
+                is UiState.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                }
             }
         }
     }

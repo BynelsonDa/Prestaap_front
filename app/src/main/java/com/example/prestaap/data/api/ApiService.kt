@@ -1,6 +1,7 @@
 package com.example.prestaap.data.api
 
 import com.example.prestaap.data.model.ClienteResponse
+import com.example.prestaap.data.model.ClienteZona
 import com.example.prestaap.data.model.CrearCreditoRequest
 import com.example.prestaap.data.model.CrearCreditoResponse
 import com.example.prestaap.data.model.FrecuenciaPago
@@ -10,6 +11,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiService {
     @GET("zonas")
@@ -20,6 +22,9 @@ interface ApiService {
 
     @GET("clientes")
     suspend fun getClientes(): Response<List<ClienteResponse>>
+
+    @GET("clientes/zona/{zonaId}")
+    suspend fun getClientesPorZona(@Path("zonaId") zonaId: Int): Response<List<ClienteZona>>
 
     @GET("frecuencias-pago")
     suspend fun getFrecuenciasPago(): Response<List<FrecuenciaPago>>
