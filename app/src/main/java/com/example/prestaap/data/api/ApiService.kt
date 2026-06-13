@@ -9,6 +9,7 @@ import com.example.prestaap.data.model.CreditoResumen
 import com.example.prestaap.data.model.FrecuenciaPago
 import com.example.prestaap.data.model.NuevoClienteRequest
 import com.example.prestaap.data.model.Zona
+import com.example.prestaap.data.model.AuthResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -39,4 +40,7 @@ interface ApiService {
 
     @POST("creditos")
     suspend fun crearCredito(@Body request: CrearCreditoRequest): Response<CrearCreditoResponse>
+
+    @POST("api/auth/google")
+    suspend fun autenticarConGoogle(@Body body: Map<String, String>): Response<AuthResponse>
 }

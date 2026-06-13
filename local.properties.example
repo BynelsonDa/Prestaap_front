@@ -1,0 +1,15 @@
+# Copia este archivo como "local.properties" en la raiz del proyecto y ajusta los valores.
+# El archivo local.properties NO se sube al repo (está en .gitignore).
+
+# Ruta al Android SDK en tu maquina
+# Windows ejemplo:
+sdk.dir=C\:\\Users\\TU_USUARIO\\AppData\\Local\\Android\\Sdk
+# Mac/Linux ejemplo:
+# sdk.dir=/Users/tu_usuario/Library/Android/sdk
+
+# URL base del backend
+# Si usas emulador de Android Studio:
+BASE_URL=http://10.0.2.2:8080/
+# Si usas celular fisico conectado a la misma red WiFi que el PC con el backend:
+# BASE_URL=http://192.168.X.X:8080/
+# (reemplaza 192.168.X.X con la IP de la maquina que corre el backend)

@@ -181,6 +181,36 @@
                 android:stateListAnimator="@null"
                 app:cornerRadius="12dp" />
 
+            <!-- ── GOOGLE SIGN IN BUTTON ── -->
+            <LinearLayout
+                android:id="@+id/btnGoogleSignIn"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:background="@drawable/bg_btn_google"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_google"
+                    android:contentDescription="Google" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="Continuar con Google"
+                    android:textColor="@color/btn_google_text"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
             <!-- ── BOTTOM BAR: Dots ── -->
             <LinearLayout
                 android:layout_width="match_parent"

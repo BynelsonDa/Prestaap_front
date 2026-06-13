@@ -10,7 +10,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <!-- Backgrounds -->
-    <color name="bg_dark">#1A1A2E</color>
+    <color name="bg_dark">#0F172A</color>
     <color name="bg_panel">#2563EB</color>
     <color name="bg_panel_dark">#1D4ED8</color>
 
@@ -39,6 +39,7 @@
     <color name="btn_primary_text">#2563EB</color>
     <color name="btn_fab_bg">#2563EB</color>
     <color name="btn_fab_icon">#FFFFFF</color>
+    <color name="btn_google_text">#202020</color>
 
     <!-- Dots -->
     <color name="dot_active">#FFFFFF</color>
