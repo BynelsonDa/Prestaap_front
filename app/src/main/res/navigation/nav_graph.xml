@@ -72,6 +72,9 @@
         <action
             android:id="@+id/action_clienteCreditosFragment_to_creditoDetalleFragment"
             app:destination="@id/creditoDetalleFragment" />
+        <action
+            android:id="@+id/action_clienteCreditosFragment_to_historialPagosFragment"
+            app:destination="@id/historialPagosFragment" />
     </fragment>
 
     <fragment
@@ -100,5 +103,20 @@
         <argument android:name="cuotasPagadas" app:argType="integer" />
         <argument android:name="totalCuotas"   app:argType="integer" />
     </fragment>
+
+    <fragment
+        android:id="@+id/historialPagosFragment"
+        android:name="com.example.prestaap.ui.HistorialPagosFragment"
+        android:label="Historial de Pagos"
+        tools:layout="@layout/fragment_historial_pagos">
+        <argument android:name="cedula" app:argType="long" />
+        <argument android:name="nombreCliente" app:argType="string" />
+    </fragment>
+
+    <fragment
+    android:id="@+id/resumenFragment"
+    android:name="com.example.prestaap.ui.ResumenFragment"
+    android:label="Resumen Financiero"
+    tools:layout="@layout/fragment_resumen" />
 
 </navigation>

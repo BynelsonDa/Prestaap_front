@@ -105,6 +105,19 @@
             app:backgroundTint="#FFFFFF"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnHistorialPagos"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:text="Historial pagos"
+            android:textSize="13sp"
+            app:cornerRadius="20dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#CCCCCC"
+            app:backgroundTint="#FFFFFF"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"

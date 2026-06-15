@@ -46,6 +46,7 @@ class ClienteCreditosFragment : Fragment() {
         setupTabs()
         setupSpinner()
         setupInfoPersonalButton(args)
+        setupHistorialPagosButton(args)
         setupBottomButtons()
         observeViewModel()
 
@@ -144,6 +145,19 @@ class ClienteCreditosFragment : Fragment() {
             }
             findNavController().navigate(
                 R.id.action_clienteCreditosFragment_to_clienteDetalleFragment,
+                bundle
+            )
+        }
+    }
+
+    private fun setupHistorialPagosButton(args: Bundle) {
+        binding.btnHistorialPagos.setOnClickListener {
+            val bundle = Bundle().apply {
+                putLong("cedula", args.getLong("cedula", 0L))
+                putString("nombreCliente", args.getString("nombreCliente", "Cliente"))
+            }
+            findNavController().navigate(
+                R.id.action_clienteCreditosFragment_to_historialPagosFragment,
                 bundle
             )
         }

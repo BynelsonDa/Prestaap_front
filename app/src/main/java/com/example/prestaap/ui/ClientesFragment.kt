@@ -41,13 +41,24 @@ class ClientesFragment : Fragment() {
         setupSpinner()
         setupFab()
         observeViewModel()
-        binding.bottomNav.selectedItemId = R.id.nav_clientes
-        binding.bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_inicio -> { findNavController().navigateUp(); true }
-                else -> true
+    binding.bottomNav.selectedItemId = R.id.nav_clientes
+    binding.bottomNav.setOnItemSelectedListener { item ->
+        when (item.itemId) {
+            R.id.nav_inicio -> {
+                findNavController().navigate(R.id.zonasFragment)
+                true
             }
+
+            R.id.nav_clientes -> true
+
+            R.id.nav_resumen -> {
+                findNavController().navigate(R.id.resumenFragment)
+                true
+            }
+
+            else -> true
         }
+    }
 
         val zonaId = arguments?.getInt("zonaId") ?: 0
         Log.d("ClientesFrag", "arguments=$arguments  zonaId=$zonaId")

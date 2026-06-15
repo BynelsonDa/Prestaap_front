@@ -10,11 +10,14 @@ import com.example.prestaap.data.model.FrecuenciaPago
 import com.example.prestaap.data.model.NuevoClienteRequest
 import com.example.prestaap.data.model.Zona
 import com.example.prestaap.data.model.AuthResponse
+import com.example.prestaap.data.model.PagoHistorialResponse
+import com.example.prestaap.data.model.ResumenIngresosResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     @GET("zonas")
@@ -43,4 +46,15 @@ interface ApiService {
 
     @POST("api/auth/google")
     suspend fun autenticarConGoogle(@Body body: Map<String, String>): Response<AuthResponse>
+
+    @GET("pagos/cliente/{cedula}")
+    suspend fun getHistorialPagosCliente(
+        @Path("cedula") cedula: Long
+    ): Response<List<PagoHistorialResponse>>
+
+    @GET("resumen/ingresos")
+    suspend fun getResumenIngresos(
+        @Query("fechaInicio") fechaInicio: String,
+        @Query("fechaFin") fechaFin: String
+    ): Response<ResumenIngresosResponse>
 }

@@ -44,7 +44,25 @@ class ZonasFragment : Fragment() {
     }
 
     private fun setupBottomNav() {
-        binding.bottomNav.selectedItemId = R.id.nav_clientes
+    binding.bottomNav.selectedItemId = R.id.nav_inicio
+
+    binding.bottomNav.setOnItemSelectedListener { item ->
+        when (item.itemId) {
+            R.id.nav_inicio -> true
+
+            R.id.nav_clientes -> {
+                findNavController().navigate(R.id.clientesFragment)
+                true
+            }
+
+            R.id.nav_resumen -> {
+                findNavController().navigate(R.id.resumenFragment)
+                true
+            }
+
+            else -> true
+            }
+        }
     }
 
     private fun setupRecyclerView() {
