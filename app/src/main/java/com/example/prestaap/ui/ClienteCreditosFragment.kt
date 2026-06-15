@@ -55,8 +55,8 @@ class ClienteCreditosFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = CreditosAdapter(
-            onAbonarClick = { _, position ->
-                AbonarBottomSheet.newInstance(position)
+            onAbonarClick = { credito, position ->
+                AbonarBottomSheet.newInstance(position, credito.label)
                     .show(parentFragmentManager, "abonar")
             },
             onCreditoClick = { credito, position ->

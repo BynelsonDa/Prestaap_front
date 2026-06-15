@@ -39,7 +39,7 @@ class CreditoDetalleFragment : Fragment() {
         binding.tvCreditoNombre.text = nombre
         binding.btnBack.setOnClickListener { findNavController().navigateUp() }
         binding.btnAbonar.setOnClickListener {
-            AbonarBottomSheet.newInstance(creditoId).show(parentFragmentManager, "abonar_detalle")
+            AbonarBottomSheet.newInstance(creditoId, nombre).show(parentFragmentManager, "abonar_detalle")
         }
 
         observeViewModel()
