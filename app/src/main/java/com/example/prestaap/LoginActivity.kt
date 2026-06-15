@@ -102,11 +102,12 @@ class LoginActivity : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnSuccessListener {
-                Log.d("FIREBASE_TEST", "Login exitoso")
+                Log.d("FIREBASE_TEST", "login Exitoso")
                 it.user?.getIdToken(false)
                     ?.addOnSuccessListener { result ->
                         result.token?.let { token ->
                             sendTokenToBackend(token) // <- aquí estaba el problema
+                            Log.d("TOKEN", token)
                         }
                     }
                     ?.addOnFailureListener { error ->

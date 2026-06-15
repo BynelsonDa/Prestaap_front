@@ -27,10 +27,11 @@ class ClientesRepository {
             if (response.isSuccessful) {
                 UiState.Success(response.body() ?: emptyList())
             } else {
-                UiState.Error("Error ${response.code()}: ${response.message()}")
+                val errorBody = response.errorBody()?.string() ?: "(sin cuerpo)"
+                UiState.Error("Error ${response.code()} para zonaId=$zonaId\n$errorBody")
             }
         } catch (e: Exception) {
-            UiState.Error(e.message ?: "Error al cargar clientes")
+            UiState.Error("Excepción zonaId=$zonaId: ${e.message}")
         }
     }
 
