@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.prestaap.R
 import com.example.prestaap.UiState
+import com.example.prestaap.data.model.CreditoResumen
 import com.example.prestaap.databinding.FragmentClienteCreditosBinding
 import com.example.prestaap.viewmodel.ClienteCreditosViewModel
 import com.google.android.material.button.MaterialButton
@@ -27,6 +28,7 @@ class ClienteCreditosFragment : Fragment() {
 
     private val viewModel: ClienteCreditosViewModel by viewModels()
     private lateinit var adapter: CreditosAdapter
+    private var creditosActuales: List<CreditoResumen> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -55,13 +57,13 @@ class ClienteCreditosFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = CreditosAdapter(
-            onAbonarClick = { credito, position ->
-                AbonarBottomSheet.newInstance(position, credito.label)
+            onAbonarClick = { credito, _ ->
+                AbonarBottomSheet.newInstance(credito.id, credito.label)
                     .show(parentFragmentManager, "abonar")
             },
-            onCreditoClick = { credito, position ->
+            onCreditoClick = { credito, _ ->
                 val bundle = Bundle().apply {
-                    putInt("creditoId",     position + 1)
+                    putInt("creditoId",     credito.id)
                     putString("nombre",     credito.label)
                     putString("estado",     credito.estado)
                     putLong("prestado",     credito.montoPrestamo.toLong())
@@ -122,6 +124,7 @@ class ClienteCreditosFragment : Fragment() {
                 is UiState.Loading -> binding.progressBar.visibility = View.VISIBLE
                 is UiState.Success -> {
                     binding.progressBar.visibility = View.GONE
+                    creditosActuales = state.data
                     adapter.submitList(state.data)
                 }
                 is UiState.Error -> {
@@ -151,7 +154,7 @@ class ClienteCreditosFragment : Fragment() {
 
     private fun setupBottomButtons() {
         binding.btnAbonarTodo.setOnClickListener {
-            AbonarBottomSheet.newInstance(null).show(parentFragmentManager, "abonar_todo")
+            AbonarBottomSheet.newInstanceTodos(creditosActuales).show(parentFragmentManager, "abonar_todo")
         }
         binding.btnEliminar.setOnClickListener {
             AlertDialog.Builder(requireContext())

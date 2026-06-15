@@ -9,7 +9,14 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
+import com.example.prestaap.UiState
+import com.example.prestaap.data.model.AbonoCreditoRequest
+import com.example.prestaap.data.model.CreditoResumen
 import com.example.prestaap.databinding.BottomSheetAbonarBinding
+import com.example.prestaap.viewmodel.AbonarViewModel
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -19,18 +26,37 @@ class AbonarBottomSheet : DialogFragment() {
     private var _binding: BottomSheetAbonarBinding? = null
     private val binding get() = _binding!!
 
-    // Métodos de pago fijos (aún no hay endpoint en el backend)
-    private val metodosPago = listOf("Efectivo", "Transferencia", "Nequi", "Daviplata")
-    private var metodoSeleccionado: String? = null
+    private val viewModel: AbonarViewModel by viewModels()
+
+    // Bancos para "Transferencia" (aún no respaldados en el backend)
+    private val bancos = listOf("Nequi", "Daviplata", "Bancolombia", "Davivienda")
+    private var bancoSeleccionado: String? = null
+
+    private var creditoId: Int? = null
+    private var creditoLabel: String = "Crédito"
+    // Cuando se abre desde "Abonar a todo", lleva la lista de créditos del cliente.
+    private var creditosTodos: List<CreditoResumen>? = null
 
     private val fechaCalendar: Calendar = Calendar.getInstance()
     private val dateDisplayFormat = SimpleDateFormat("dd/MM/yy", Locale.getDefault())
+    private val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
 
     companion object {
+        // Único método respaldado por ahora: Efectivo (id=1 en metodo_de_pago)
+        private const val METODO_EFECTIVO_ID = 1
+
         fun newInstance(creditoId: Int?, creditoLabel: String? = null) = AbonarBottomSheet().apply {
             arguments = Bundle().apply {
                 if (creditoId != null) putInt("creditoId", creditoId)
                 if (creditoLabel != null) putString("creditoLabel", creditoLabel)
+            }
+        }
+
+        /** "Abonar a todo": lleva todos los créditos del cliente para repartir el monto. */
+        fun newInstanceTodos(creditos: List<CreditoResumen>) = AbonarBottomSheet().apply {
+            arguments = Bundle().apply {
+                putString("creditosTodosJson", Gson().toJson(creditos))
+                putString("creditoLabel", "Todos")
             }
         }
     }
@@ -45,20 +71,50 @@ class AbonarBottomSheet : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Crédito auto-seleccionado: muestra desde cuál se abrió el sheet
-        val creditoLabel = arguments?.getString("creditoLabel")
-        val creditoId = arguments?.let { if (it.containsKey("creditoId")) it.getInt("creditoId") else null }
-        binding.tvCredito.text = creditoLabel
+        creditoId = arguments?.let { if (it.containsKey("creditoId")) it.getInt("creditoId") else null }
+        creditoLabel = arguments?.getString("creditoLabel")
             ?: creditoId?.let { "Crédito #$it" }
-            ?: "Todos los créditos"
+            ?: "Todos"
+        binding.tvCredito.text = creditoLabel
 
-        // Fecha de hoy por defecto
+        arguments?.getString("creditosTodosJson")?.let { json ->
+            val type = object : TypeToken<List<CreditoResumen>>() {}.type
+            creditosTodos = Gson().fromJson(json, type)
+        }
+
         binding.tvFecha.text = dateDisplayFormat.format(fechaCalendar.time)
 
         binding.ivClose.setOnClickListener { dismiss() }
         binding.layoutFecha.setOnClickListener { mostrarDatePicker() }
-        binding.layoutMetodo.setOnClickListener { mostrarMetodos() }
+
+        binding.cbFisico.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                binding.cbTransferencia.isChecked = false
+                binding.layoutBanco.visibility = View.GONE
+                bancoSeleccionado = null
+            }
+        }
+        binding.cbTransferencia.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                binding.cbFisico.isChecked = false
+                binding.layoutBanco.visibility = View.VISIBLE
+            } else {
+                binding.layoutBanco.visibility = View.GONE
+            }
+        }
+        binding.layoutBanco.setOnClickListener { mostrarBancos() }
         binding.btnConfirmar.setOnClickListener { registrar() }
+
+        observarRegistro()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.apply {
+            setBackgroundDrawableResource(android.R.color.transparent)
+            val ancho = (resources.displayMetrics.widthPixels * 0.88).toInt()
+            setLayout(ancho, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
     }
 
     private fun mostrarDatePicker() {
@@ -74,47 +130,83 @@ class AbonarBottomSheet : DialogFragment() {
         ).show()
     }
 
-    private fun mostrarMetodos() {
-        val popup = PopupMenu(requireContext(), binding.layoutMetodo)
-        metodosPago.forEachIndexed { index, metodo ->
-            popup.menu.add(0, index, index, metodo)
+    private fun mostrarBancos() {
+        val popup = PopupMenu(requireContext(), binding.layoutBanco)
+        bancos.forEachIndexed { index, banco ->
+            popup.menu.add(0, index, index, banco)
         }
         popup.setOnMenuItemClickListener { item ->
-            metodoSeleccionado = metodosPago[item.itemId]
-            binding.tvMetodoPago.text = metodoSeleccionado
-            binding.tvMetodoPago.setTextColor(Color.parseColor("#212121"))
+            bancoSeleccionado = bancos[item.itemId]
+            binding.tvBanco.text = bancoSeleccionado
+            binding.tvBanco.setTextColor(Color.parseColor("#212121"))
             true
         }
         popup.show()
     }
 
     private fun registrar() {
-        if (metodoSeleccionado == null) {
+        // Por ahora solo "Físico" (Efectivo) está respaldado en el backend
+        if (binding.cbTransferencia.isChecked) {
+            Toast.makeText(
+                requireContext(),
+                "Transferencia aún no disponible (solo efectivo por ahora)",
+                Toast.LENGTH_LONG
+            ).show()
+            return
+        }
+        if (!binding.cbFisico.isChecked) {
             Toast.makeText(requireContext(), "Selecciona un método de pago", Toast.LENGTH_SHORT).show()
             return
         }
-        val monto = binding.etMonto.text.toString().trim()
-        if (monto.isEmpty()) {
+        val montoStr = binding.etMonto.text.toString().trim()
+        if (montoStr.isEmpty()) {
             binding.etMonto.error = "Ingresa el monto"
             return
         }
-        // Solo diseño: por ahora no se envía al backend
-        Toast.makeText(
-            requireContext(),
-            "Abono de $$monto ($metodoSeleccionado) registrado",
-            Toast.LENGTH_SHORT
-        ).show()
-        dismiss()
+        val monto = montoStr.toDoubleOrNull()
+        if (monto == null || monto <= 0) {
+            binding.etMonto.error = "Monto inválido"
+            return
+        }
+        val fechaPago = isoFormat.format(fechaCalendar.time)
+
+        // Modo "Abonar a todo": reparte el monto entre los créditos del cliente
+        val todos = creditosTodos
+        if (todos != null) {
+            if (todos.isEmpty()) {
+                Toast.makeText(requireContext(), "El cliente no tiene créditos", Toast.LENGTH_SHORT).show()
+                return
+            }
+            viewModel.registrarPagoTodos(todos, monto, fechaPago, METODO_EFECTIVO_ID)
+            return
+        }
+
+        val cid = creditoId
+        if (cid == null || cid <= 0) {
+            Toast.makeText(requireContext(), "Selecciona un crédito para abonar", Toast.LENGTH_SHORT).show()
+            return
+        }
+        viewModel.registrarPago(
+            cid,
+            AbonoCreditoRequest(monto, fechaPago, METODO_EFECTIVO_ID, null)
+        )
     }
 
-    override fun onStart() {
-        super.onStart()
-        // Ventana emergente centrada: fondo transparente para que se vea la tarjeta
-        // redondeada, y ancho al 88% de la pantalla.
-        dialog?.window?.apply {
-            setBackgroundDrawableResource(android.R.color.transparent)
-            val ancho = (resources.displayMetrics.widthPixels * 0.88).toInt()
-            setLayout(ancho, ViewGroup.LayoutParams.WRAP_CONTENT)
+    private fun observarRegistro() {
+        viewModel.pago.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is UiState.Loading -> binding.btnConfirmar.isEnabled = false
+                is UiState.Success -> {
+                    val json = Gson().toJson(state.data)
+                    ReciboPagoDialog.newInstance(json, creditoLabel)
+                        .show(parentFragmentManager, "recibo_pago")
+                    dismiss()
+                }
+                is UiState.Error -> {
+                    binding.btnConfirmar.isEnabled = true
+                    Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 

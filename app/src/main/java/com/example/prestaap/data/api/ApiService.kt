@@ -10,6 +10,8 @@ import com.example.prestaap.data.model.FrecuenciaPago
 import com.example.prestaap.data.model.NuevoClienteRequest
 import com.example.prestaap.data.model.Zona
 import com.example.prestaap.data.model.AuthResponse
+import com.example.prestaap.data.model.AbonoCreditoRequest
+import com.example.prestaap.data.model.PagoResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -43,4 +45,10 @@ interface ApiService {
 
     @POST("api/auth/google")
     suspend fun autenticarConGoogle(@Body body: Map<String, String>): Response<AuthResponse>
+
+    @POST("pagos/credito/{id}")
+    suspend fun crearPagoCredito(
+        @Path("id") creditoId: Int,
+        @Body request: AbonoCreditoRequest
+    ): Response<PagoResponse>
 }

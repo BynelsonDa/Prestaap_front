@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- Tarjeta del recibo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_dialog_rounded"
+        android:padding="20dp">
+
+        <!-- Header -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Recibo"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A1A" />
+
+            <ImageView
+                android:id="@+id/ivClose"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="end|center_vertical"
+                android:src="@drawable/ic_close"
+                android:contentDescription="Cerrar"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="#666666" />
+
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EEEEEE"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Datos del pago -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:paddingVertical="3dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Cliente: " android:textSize="14sp" android:textColor="#555555" />
+            <TextView android:id="@+id/tvCliente" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textSize="14sp" android:textStyle="bold" android:textColor="#1A1A1A" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:paddingVertical="3dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Crédito: " android:textSize="14sp" android:textColor="#555555" />
+            <TextView android:id="@+id/tvCredito" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textSize="14sp" android:textStyle="bold" android:textColor="#1A1A1A" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:paddingVertical="3dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Método de pago: " android:textSize="14sp" android:textColor="#555555" />
+            <TextView android:id="@+id/tvMetodo" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textSize="14sp" android:textStyle="bold" android:textColor="#1A1A1A" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:paddingVertical="3dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Monto: " android:textSize="14sp" android:textColor="#555555" />
+            <TextView android:id="@+id/tvMonto" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textSize="14sp" android:textStyle="bold" android:textColor="#1A1A1A" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:paddingVertical="3dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Fecha: " android:textSize="14sp" android:textColor="#555555" />
+            <TextView android:id="@+id/tvFecha" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textSize="14sp" android:textStyle="bold" android:textColor="#1A1A1A" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:paddingVertical="3dp">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Hora: " android:textSize="14sp" android:textColor="#555555" />
+            <TextView android:id="@+id/tvHora" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textSize="14sp" android:textStyle="bold" android:textColor="#1A1A1A" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#EEEEEE"
+            android:layout_marginVertical="12dp" />
+
+        <!-- Cabecera de la tabla de distribucion -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="4dp">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1.2"
+                android:text="" android:textSize="13sp" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                android:text="Capital" android:textSize="13sp" android:textStyle="bold" android:textColor="#1A1A1A" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                android:text="Interés" android:textSize="13sp" android:textStyle="bold" android:textColor="#1A1A1A" />
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"
+                android:text="Estado" android:textSize="13sp" android:textStyle="bold" android:textColor="#1A1A1A" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvCuotas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false" />
+
+        <Button
+            android:id="@+id/btnListo"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="18dp"
+            android:text="Listo"
+            android:textSize="16sp"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#2563EB"
+            style="@style/Widget.MaterialComponents.Button"
+            app:cornerRadius="12dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
