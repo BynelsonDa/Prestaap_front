@@ -55,13 +55,13 @@ class ClienteCreditosFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = CreditosAdapter(
-            onAbonarClick = { _, position ->
-                AbonarBottomSheet.newInstance(position)
+            onAbonarClick = { credito, _ ->
+                AbonarBottomSheet.newInstance(credito.id)
                     .show(parentFragmentManager, "abonar")
             },
-            onCreditoClick = { credito, position ->
+            onCreditoClick = { credito, _ ->
                 val bundle = Bundle().apply {
-                    putInt("creditoId",     position + 1)
+                    putInt("creditoId",     credito.id)
                     putString("nombre",     credito.label)
                     putString("estado",     credito.estado)
                     putLong("prestado",     credito.montoPrestamo.toLong())

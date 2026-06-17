@@ -9,7 +9,7 @@ data class CreditoDetalle(
     @SerializedName("interes") val interes: Double,
     @SerializedName("numeroDeCuotas") val numeroDeCuotas: Int,
     @SerializedName("frecuenciaPago") val frecuenciaPago: String,
-    @SerializedName("valorInteresPorCuota") val valorInteresPorCuota: Double,
+   // @SerializedName("valorInteresPorCuota") val valorInteresPorCuota: Double,
     @SerializedName("cuotasPagadas") val cuotasPagadas: Int,
     @SerializedName("cuotasVencidas") val cuotasVencidas: Int,
     @SerializedName("totalAbonado") val totalAbonado: Double,

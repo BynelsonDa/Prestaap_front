@@ -3,6 +3,7 @@ package com.example.prestaap.data.model
 import com.google.gson.annotations.SerializedName
 
 data class CreditoResumen(
+    @SerializedName("id") val id: Int,
     @SerializedName("label") val label: String,
     @SerializedName("montoPrestamo") val montoPrestamo: Double,
     @SerializedName("montoRestante") val montoRestante: Double,

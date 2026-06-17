@@ -73,7 +73,6 @@ class CreditoDetalleFragment : Fragment() {
         binding.tvFrecuenciaPago.text    = d.frecuenciaPago
         binding.tvTotalCuotas.text       = d.numeroDeCuotas.toString()
         binding.tvPorcentajeInteres.text = "${d.interes}%"
-        binding.tvInteresesPorCuota.text = formatPeso(d.valorInteresPorCuota.toLong())
         binding.tvCuotasPagadas.text     = "${d.cuotasPagadas}/${d.numeroDeCuotas}"
         binding.tvCuotasVencidas.text    = d.cuotasVencidas.toString()
         binding.tvTotalAbonado.text      = formatPeso(d.totalAbonado.toLong())
